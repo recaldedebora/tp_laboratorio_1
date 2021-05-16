@@ -65,8 +65,8 @@ int addEmployeeByBuffer(Employee* list, int len, int* id)
 
 		if(	utn_getNombre(bufferEmployee.name,NAME_LEN,"\nNombre?\n","\nERROR\n",2) == 0 &&
 			utn_getDescripcion(bufferEmployee.lastName,LASTNAME_LEN,"\nApellido?\n","\nERROR\n",2) == 0 &&
-			utn_getNumeroFlotante(&bufferEmployee.salary,"\nSalario?\n","\nERROR\n",0,10000,2) == 0 &&
-			utn_getNumero(&bufferEmployee.sector,"Ingrese Sector :","ERROR",0,1,2)==0)
+			utn_getNumeroFlotante(&bufferEmployee.salary,"\nSalario?\n","\nERROR\n",0,SALARIO_LEN,2) == 0 &&
+			utn_getNumero(&bufferEmployee.sector,"Ingrese Sector: RRHH[1] Customer Service[2] Marketing[3]:","ERROR",1,3,2)==0)
 		{
 			respuesta = 0;
 			addEmployee(list,len,id, bufferEmployee.name,bufferEmployee.lastName,bufferEmployee.salary,bufferEmployee.sector);
@@ -333,10 +333,10 @@ int printEmployees(Employee* list, int length)
 	int i;
 	if(list != NULL && length > 0 && list->isEmpty == OCUPADO)
 	{
+		printf("\n%3s - %8s - %12s - %12s - %3s","ID", "NOMBRE", "APELLIDO", "SALARIO", "SECTOR");
 		respuesta = 0;
 		for(i=0;i<length;i++)
 		{
-			printf("\nID: %3s - %8s - %8s - %6s - %3s","ID", "NOMBRE", "APELLIDO", "SALARIO", "SECTOR");
 			printAnEmployee(&list[i]);
 		}
 	}
@@ -356,10 +356,26 @@ int printEmployees(Employee* list, int length)
  int printAnEmployee(Employee* pElemento)
 {
 	int retorno=-1;
+	char sector[50];
 	if(pElemento != NULL && pElemento->isEmpty == OCUPADO)
 	{
 		retorno=0;
-		printf("\nID: %3d - %8s - %8s - %6.2f - %3d",pElemento->id,pElemento->name,pElemento->lastName,pElemento->salary,pElemento->sector);
+		switch(pElemento->sector){
+		case RRHH:
+			strcpy(sector,"RRHH");
+
+		break;
+		case CUSTOMER_SEVICE:
+
+			strcpy(sector,"Customer Service");
+		break;
+		case MARKETING:
+
+			strcpy(sector,"Marketing");
+		break;
+
+		}
+		printf("\n%3d - %12s - %12s - %6.2f - %3s",pElemento->id,pElemento->name,pElemento->lastName,pElemento->salary,sector);
 	}
 	return retorno;
 }

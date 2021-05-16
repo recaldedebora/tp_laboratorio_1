@@ -37,10 +37,10 @@ int main()
         printf("Array inicializado correctamente. \n\n");
     }
 
-    addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "lala","papa",15.2,1);
-    addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "kiki","hihi",90.2,2);
-    addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "meme","zozo",15.6,1);
-    addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "lila","hihi",10.8,1);
+		//addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "Juan","Fernández",15000.2,1);
+		//addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "Ana","Gómez",90000.2,2);
+		//addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "Maria","Martinez",19000.6,1);
+		//addEmployee(arrayEmployee, TAM_EMPLOYEE, &idEmployee, "José","Fernández",10000.8,3);
 
     do{
     	MostarMenuABM();

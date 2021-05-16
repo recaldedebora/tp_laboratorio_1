@@ -15,6 +15,10 @@
 #define SECTOR_LEN 20
 #define LIBRE 0
 #define OCUPADO 1
+#define RRHH 1
+#define CUSTOMER_SEVICE 2
+#define MARKETING 3
+#define SALARIO_LEN 200000
 
 struct
 {
