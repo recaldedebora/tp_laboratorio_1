@@ -14,7 +14,7 @@
 #include <stddef.h>
 
 #define TAM 1000
-#define N 0.00
+#define N 0.001
 #define MINIMO 1
 #define MAXIMO 5
 
@@ -75,6 +75,8 @@ int ValidarFloat(char datoIngresado[]);
  * @return retorna 1 si es entero, 0 si no los es
  */
 int ValidarDigitosFloat(float floatIngresado);
+
+//int ValidarCero (int operando);
 
 /**
  * @fn int PedirEntero(char[], char[])

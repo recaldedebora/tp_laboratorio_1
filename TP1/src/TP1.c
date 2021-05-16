@@ -11,7 +11,7 @@
 #include "Calculadora.h"
 
 #define TAM 1000
-#define N 0.00
+#define N 0.001
 #define MINIMO 1
 #define MAXIMO 5
 

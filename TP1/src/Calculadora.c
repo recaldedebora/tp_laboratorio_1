@@ -12,7 +12,7 @@
 void MostrarMenu(int flag1, int flag2, float operando1, float operando2){
 
     if(flag1 == 0 && flag2 == 0){
-        printf("\n\nMENÚ CALCULADORA\n");
+        printf("\n\nMENU CALCULADORA\n");
         printf("1. Ingresar primer operando (A=x)\n");
         printf("2. Ingresar primer operando (B=y)\n");
         printf("3. Calcular todas las operaciones\n");
@@ -25,7 +25,7 @@ void MostrarMenu(int flag1, int flag2, float operando1, float operando2){
         printf("5. Salir\n");
     }
     else if(flag1 != 0 && flag2 == 0){
-        printf("\n\nMENÚ CALCULADORA\n");
+        printf("\n\nMENU CALCULADORA\n");
         printf("1. Ingresar primer operando (A=%.2f)\n", operando1);
         printf("2. Ingresar primer operando (B=y)\n");
         printf("3. Calcular todas las operaciones\n");
@@ -38,7 +38,7 @@ void MostrarMenu(int flag1, int flag2, float operando1, float operando2){
         printf("5. Salir\n");
     }
     else if(flag1 == 0 && flag2 != 0){
-        printf("\n\nMENÚ CALCULADORA\n");
+        printf("\n\nMENU CALCULADORA\n");
         printf("1. Ingresar primer operando (A=x)\n");
         printf("2. Ingresar primer operando (B=%.2f)\n", operando2);
         printf("3. Calcular todas las operaciones\n");
@@ -51,7 +51,7 @@ void MostrarMenu(int flag1, int flag2, float operando1, float operando2){
         printf("5. Salir\n");
     }
     else{
-        printf("\n\nMENÚ CALCULADORA\n");
+        printf("\n\nMENU CALCULADORA\n");
         printf("1. Ingresar primer operando (A=%.2f)\n", operando1);
         printf("2. Ingresar primer operando (B=%.2f)\n", operando2);
         printf("3. Calcular todas las operaciones\n");
@@ -131,10 +131,27 @@ int ValidarDigitosFloat(float floatIngresado)//devuelvo 1 si es entero, 0 si no 
     if((floatIngresado - entero) == 0 && entero > 0){
         return 1;
     }
+    else
+    {
+    	return 0;
+    }
 
-    return 0;
 
 }
+
+/*int ValidarCero (int operando){//retorno 1 si es cero, 0 si no lo es
+
+	if(operando == 0){
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+
+}
+*/
+
 //Pedir dato
 
 int PedirEntero(char mensajePedirDato [], char mensajeError []){
@@ -186,7 +203,7 @@ float PedirFloat(char mensaje[], char mensajeError[], char mensajeOk []){
 	}
 
 	numeroIngresado = atof(datoIngresado);
-	printf("\nUsted ingresó: %.2f \n%s", numeroIngresado, mensajeOk);
+	printf("\nUsted ingreso: %.2f \n%s", numeroIngresado, mensajeOk);
 
 	return numeroIngresado;
 
@@ -203,11 +220,11 @@ eResultados CalcularOperaciones (float operando1, float operando2){
     resultadosCalculados.resultadoResta = RestarOperandos(operando1, operando2);
 
     if(operando2 !=0){
-        resultadosCalculados.resultadoDivision = DividirOperandos(operando1, operando2);
+      resultadosCalculados.resultadoDivision = DividirOperandos(operando1, operando2);
     }
     else
     {
-        resultadosCalculados.resultadoDivision = N;
+      resultadosCalculados.resultadoDivision = N;
     }
 
     resultadosCalculados.resultadoMultiplicacion = MultiplicarOperandos(operando1, operando2);
@@ -284,14 +301,17 @@ void MostrarResultados(float primerOperando, float segundoOperando, eResultados 
     printf("\nRESULTADOS:\n");
     printf("A. El resultado de la suma de %.2f + %.2f es: %.2f \n", primerOperando, segundoOperando , resultados.resultadoSuma);
     printf("B. El resultado de la resta de %.2f - %.2f es: %.2f \n", primerOperando, segundoOperando , resultados.resultadoResta);
-    if(resultados.resultadoDivision != N)
-    {
-        printf("C. El resultado de la division de %.2f / %.2f es: %.2f\n", primerOperando, segundoOperando, resultados.resultadoDivision);
+
+
+    if(resultados.resultadoDivision != N){
+       printf("C. El resultado de la division de %.2f / %.2f es: %.2f\n", primerOperando, segundoOperando, resultados.resultadoDivision);
     }
-    else
-    {
-        printf("C. No se puede dividir por cero\n");
+    else{
+       printf("C. No se puede dividir por cero\n");
     }
+
+
+
     printf("D. El resultado de la multiplicacion de %.2f / %.2f es: %.2f \n", primerOperando, segundoOperando , resultados.resultadoMultiplicacion);
 
 
