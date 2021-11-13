@@ -8,7 +8,8 @@ typedef struct
     int horasTrabajadas;
     int sueldo;
 }Employee;
-//static int id;
+//static int idStatic;
+//static int obtenerId();
 Employee* employee_new();//constructor//genera espacio e inicializa en cero
 Employee* employee_newParametros(char* idStr,char* nombreStr,char* horasTrabajadasStr, char* sueldoStr);//llama a new employee y a los seters
 void employee_delete(Employee*);//destructor eloimina un empleado de la memoria

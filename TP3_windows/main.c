@@ -28,22 +28,34 @@ int main()
 	setbuf(stdout,NULL);
     int option;
     LinkedList* listaEmpleados = ll_newLinkedList();
-    controller_ID_loadFromBinary("id.bin");
+    FILE* pArchivo;
+    int numero;
+    numero=1000;
+
+    pArchivo= fopen("id.bin","wb");
+
+    if(pArchivo!=NULL)
+    {
+    fwrite(&numero, sizeof(int),1, pArchivo);
+    fclose(pArchivo);
+    }
+
+    controller_SiguienteID("id.bin");
     do{
 
     	printf("\n\n****************************************************");
-    	printf("Menu:");
-    	printf("1. Cargar los datos de los empleados desde el archivo data.csv (modo texto).");
-    	printf("2. Cargar los datos de los empleados desde el archivo data.bin (modo binario).");
-    	printf("3. Alta de empleado");
-    	printf("4. Modificar datos de empleado");
-    	printf("5. Baja de empleado");
-    	printf("6. Listar empleados");
-    	printf("7. Ordenar empleados");
-    	printf("8. Guardar los datos de los empleados en el archivo data.csv (modo texto).");
-    	printf("9. Guardar los datos de los empleados en el archivo data.bin (modo binario).");
-    	printf("10. Salir");
-    	printf("*****************************************************");
+    	printf("\nMenu:");
+    	printf("\n1. Cargar los datos de los empleados desde el archivo data.csv (modo texto).");
+    	printf("\n2. Cargar los datos de los empleados desde el archivo data.bin (modo binario).");
+    	printf("\n3. Alta de empleado");
+    	printf("\n4. Modificar datos de empleado");
+    	printf("\n5. Baja de empleado");
+    	printf("\n6. Listar empleados");
+    	printf("\n7. Ordenar empleados");
+    	printf("\n8. Guardar los datos de los empleados en el archivo data.csv (modo texto).");
+    	printf("\n9. Guardar los datos de los empleados en el archivo data.bin (modo binario).");
+    	printf("\n10. Salir");
+    	printf("\n*****************************************************");
     	utn_getNumeroRango(&option, "\nIngrese opcion: ", "Error.", 1, 10, 2);
 
 
@@ -89,6 +101,9 @@ int main()
 
         }
     }while(option != 10);
+
+    controller_ID_saveAsBinary("id.bin");
+
     return 0;
 }
 

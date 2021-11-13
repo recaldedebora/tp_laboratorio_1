@@ -2,11 +2,16 @@
 #include <stdlib.h>
 #include "Employee.h"
 
+/*
+static int idStatic = 0;
 
-//static int id = 0;
+static int obtenerId(){
+	static int id = 0;
 
-
-
+	id++;
+	return id;
+}
+*/
 
 
 	//constructor//genera espacio e inicializa en cero

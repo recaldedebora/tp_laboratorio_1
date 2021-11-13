@@ -5,6 +5,16 @@
 #include "Controller.h"
 
 
+static int idStatic = 0;
+/*
+static int obtenerId(int idP){
+	if(idP != -1){
+		idStatic = idP;
+	}
+	idStatic++;
+	return idStatic;
+}*/
+
 /** \brief Carga los datos de los empleados desde el archivo data.csv (modo texto).
  *
  * \param path char*
@@ -70,7 +80,7 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 int controller_addEmployee(LinkedList* pArrayListEmployee)
 {
 	int retorno;
-	int id;
+	int idObtenido;
 	int sueldo;
 	int horasTrabajadas;
 	char idStr[50];
@@ -86,8 +96,13 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
 		utn_getNumero(&sueldo, "Ingrese sueldo: ", "Error.", 2);
 		utn_getNumero(&horasTrabajadas, "Ingrese horas Trabajadas: ", "Error.", 2);
 		utn_getNombre(nombreStr, 50,"Ingrese nombre: ", "Error.", 2);
-		id = 1001;
-		sprintf(idStr, "%d", id);
+
+
+		idObtenido = idStatic;
+		printf("ID OBTENIDO STATIC %d", idObtenido);
+		idStatic++;
+
+		sprintf(idStr, "%d", idObtenido);
 		sprintf(horasTrabajadasStr, "%d", horasTrabajadas);
 		sprintf(sueldoStr, "%d", sueldo);
 
@@ -504,12 +519,12 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 
 
 
-int controller_ID_loadFromBinary(char* path)
+int controller_ID_loadFromBinary(char* path, int* id)
 {
 	int retorno;
+	int numero;
 	retorno = -1;
 	FILE* pArchivoID;
-	int numero;
 
 	if(path!=NULL)
 	{
@@ -518,7 +533,8 @@ int controller_ID_loadFromBinary(char* path)
 		if(pArchivoID!=NULL)
 		{
 			fread(&numero, sizeof(int),1, pArchivoID);
-			printf("id archivo: %d", numero);
+			printf("id archivo: %d\n", numero);
+			*id = numero;
 			retorno = 0;
 		}
 		fclose(pArchivoID);
@@ -529,25 +545,54 @@ int controller_ID_loadFromBinary(char* path)
 	return retorno;
 }
 
-int controller_ID_saveAsBinary(char* path , int* idStatic)
+int controller_ID_saveAsBinary(char* path)
 {
 	FILE* pArchivoID;
 	int retorno;
+	int id;
 	retorno = -1;
 
-	if(path!= NULL && idStatic!=NULL)
+	if(path!= NULL)
 	{
 		pArchivoID= fopen(path, "wb");
 
 		if(pArchivoID!=NULL){
 
-				fwrite(idStatic, sizeof(int), 1,pArchivoID);
-				retorno = 0;
+			id = idStatic;
+			printf("ID GUARDADO EN ARCHIVO ID.BIN: %d", id);
+			fwrite(&id, sizeof(int), 1,pArchivoID);
+			retorno = 0;
 
 		}
 
 	}
 
 	fclose(pArchivoID);
+	return retorno;
+}
+
+
+
+int controller_SiguienteID(char* path){
+
+	int idObtenido;
+	//int id = 1002;
+	int retorno =0;
+
+	if(path!= NULL)
+	{
+		//controller_ID_saveAsBinary(path, &id);
+
+		controller_ID_loadFromBinary(path, &idObtenido);
+		printf("1111 %d", idObtenido);
+		idObtenido= idObtenido+1;
+		idStatic = idObtenido;
+
+		//controller_ID_saveAsBinary(path , &idObtenido);
+
+	}
+
+
+
 	return retorno;
 }
