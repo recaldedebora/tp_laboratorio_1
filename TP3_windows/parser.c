@@ -30,22 +30,9 @@ int parser_EmployeeFromText(FILE* pFile , LinkedList* pArrayListEmployee)
 
 	if(pFile!=NULL && pArrayListEmployee!= NULL)
 	{
-		/*
-		printf("Parser");
-		fscanf(pFile,"%[^\n]\n", cabecera);
-		printf("%s", cabecera);
-
-
-		strcpy(cabeceraEployee , cabecera);
-		printf("prueba cabecera:  %s", cabeceraEployee);
-
-
-		printf("Parser despues falsa lectura");*/
-
 		fscanf(pFile,"%[^\n]\n", cabecera);
 		while(!feof(pFile))
 		{
-
 			cantidad = fscanf(pFile,"%[^,],%[^,],%[^,],%[^\n]\n", id, nombre,horasTrabajadas,sueldo);
 			if(cantidad==4)
 			{
@@ -86,13 +73,11 @@ int parser_EmployeeFromBinary(FILE* pFile , LinkedList* pArrayListEmployee)
 	{
 		while(!feof(pFile))
 		{
-			if(!feof(pFile)){
-				break;
-			}
 			pAuxiliar = employee_new();
 			fread(pAuxiliar, sizeof(Employee),1,pFile);
-
-			ll_add(pArrayListEmployee,pAuxiliar);
+			if(!feof(pFile)){
+				ll_add(pArrayListEmployee,pAuxiliar);
+			}
 			retorno=0;
 		}
 

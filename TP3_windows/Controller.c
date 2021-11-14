@@ -6,20 +6,14 @@
 
 
 static int idStatic = 0;
-/*
-static int obtenerId(int idP){
-	if(idP != -1){
-		idStatic = idP;
-	}
-	idStatic++;
-	return idStatic;
-}*/
+
 
 /** \brief Carga los datos de los empleados desde el archivo data.csv (modo texto).
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 0 Exito
+ * 		   int -1 Error
  *
  */
 int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
@@ -47,7 +41,8 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 0 Exito
+ * 		   int -1 Error
  *
  */
 int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
@@ -56,10 +51,10 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 	retorno = -1;
 	FILE* pArchivo;
 
-	pArchivo = fopen(path, "rb");
 
 	if(path!=NULL && pArrayListEmployee!=NULL)
 	{
+		pArchivo = fopen(path, "rb");
 		if(parser_EmployeeFromBinary(pArchivo, pArrayListEmployee)== 0)
 		{
 			retorno = 0;
@@ -74,7 +69,9 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 1 Exito
+ *  	   int 0 Cancelado
+ * 		   int -1 Error
  *
  */
 int controller_addEmployee(LinkedList* pArrayListEmployee)
@@ -87,31 +84,38 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
 	char nombreStr[50];
 	char horasTrabajadasStr[50];
 	char sueldoStr[50];
-	int len;
+	int respuesta;
 	Employee* auxiliar;
 	retorno = -1;
 
 	if(pArrayListEmployee!=NULL)
 	{
-		utn_getNumero(&sueldo, "Ingrese sueldo: ", "Error.", 2);
+		utn_getNumero(&sueldo, "\nIngrese sueldo: ", "Error.", 2);
 		utn_getNumero(&horasTrabajadas, "Ingrese horas Trabajadas: ", "Error.", 2);
 		utn_getNombre(nombreStr, 50,"Ingrese nombre: ", "Error.", 2);
 
+		printf("\nEmpleado a dar de alta:\n NOMBRE: %s - HORAS: %d - SUELDO: %d\n",nombreStr, sueldo, horasTrabajadas);
+		respuesta = ConfirmarGestion("¿DESEA CONFIRMAR EL ALTA? SI[S] - NO[N]: ","ERROR. REINGRESE.");;
 
-		idObtenido = idStatic;
-		printf("ID OBTENIDO STATIC %d", idObtenido);
-		idStatic++;
+		if(respuesta == 1){
+			idObtenido = idStatic;
+			idStatic++;
 
-		sprintf(idStr, "%d", idObtenido);
-		sprintf(horasTrabajadasStr, "%d", horasTrabajadas);
-		sprintf(sueldoStr, "%d", sueldo);
+			sprintf(idStr, "%d", idObtenido);
+			sprintf(horasTrabajadasStr, "%d", horasTrabajadas);
+			sprintf(sueldoStr, "%d", sueldo);
 
-		auxiliar = employee_newParametros(idStr,nombreStr,horasTrabajadasStr,sueldoStr);
-		ll_add(pArrayListEmployee, (Employee*)auxiliar);
-		len= ll_len(pArrayListEmployee);
-		printf("LEN DSPUES ALTA: %d", len);
+			auxiliar = employee_newParametros(idStr,nombreStr,horasTrabajadasStr,sueldoStr);
+			ll_add(pArrayListEmployee, (Employee*)auxiliar);
+			employee_show(auxiliar);
+			retorno = 1;
+
+		}else{
+			retorno = 0;
+		}
+
+
 	}
-	retorno = 0;
 
 	return retorno;
 }
@@ -120,7 +124,9 @@ int controller_addEmployee(LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 1 Exito
+ *  	   int 0 Cancelado
+ * 		   int -1 Error
  *
  */
 int controller_editEmployee(LinkedList* pArrayListEmployee)
@@ -146,7 +152,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 	if(pArrayListEmployee!=NULL)
 	{
 		controller_ListEmployee(pArrayListEmployee);
-		utn_getNumero(&idBuscado, "Ingrese ID del empleado a modificar: ", "Error.", 2);
+		utn_getNumero(&idBuscado, "\nIngrese ID del empleado a modificar: ", "Error.", 2);
 
 		len = ll_len(pArrayListEmployee);
 		for(i=0; i<len;i++)
@@ -155,7 +161,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 			employee_getId(unEmpleado,&idEmployee);
 			if(idEmployee == idBuscado)
 			{
-				printf("Empleado a eliminar: \n");
+				printf("\nEmpleado a eliminar: \n");
 				employee_show(unEmpleado);
 				auxiliar = unEmpleado;
 
@@ -173,19 +179,19 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 
 							utn_getNombre(nombreStr, 50,"Ingrese nombre: ", "Error.", 2);
 							employee_setNombre(auxiliar,nombreStr);
-							flagModificaciones = 1;
+							flagModificaciones++;
 						 break;
 						 case 2:
 
 							utn_getNumero(&horasTrabajadas, "Ingrese horas Trabajadas: ", "Error.", 2);
 							employee_setHorasTrabajadas(auxiliar,horasTrabajadas);
-							flagModificaciones = 1;
+							flagModificaciones++;
 						 break;
 						 case 3:
 							utn_getNumero(&sueldo, "Ingrese sueldo: ", "Error.", 2);
 							employee_setSueldo(auxiliar,sueldo);
 
-							flagModificaciones = 1;
+							flagModificaciones++;
 						 break;
 
 						 case 4:
@@ -196,17 +202,18 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 							else
 							{
 
-								confirmar = ConfirmarGestion("DESEA CONTINUAR SI[S] - NO[N]: ","ERROR. REINGRESE.");
+								confirmar = ConfirmarGestion("¿DESEA CONFIMAR LAS MODIFICACIONES? SI[S] - NO[N]: ","ERROR. REINGRESE.");
 								if(confirmar)
 								{
 
 									 ll_set(pArrayListEmployee, i,auxiliar);
 									 printf("Modificacion/es confirmada/s\n");
-									 retorno = 0;
+									 retorno = 1;
 								}
 								else
 								{
 									printf("Modificacion/es cancelada/s\n");
+									retorno = 0;
 								}
 								flag = 1;
 							}
@@ -214,7 +221,7 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
 						 case 5:
 							 if(flag == 0)
 							 {
-								 printf("Debe ingresar a la opción 4 para Confirmar/Cancelar modificaciones\n");
+								 printf("\nDebe ingresar a la opción 4 para Confirmar/Cancelar modificaciones\n");
 							 }
 							 else
 							 {
@@ -241,7 +248,9 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 1 Exito
+ *  	   int 0 Cancelado
+ * 		   int -1 Error
  *
  */
 int controller_removeEmployee(LinkedList* pArrayListEmployee)
@@ -252,12 +261,13 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 	int len;
 	Employee* unEmpleado;
 	int i;
+	int respuesta;
 	retorno = -1;
 
 	if(pArrayListEmployee!=NULL)
 	{
 		controller_ListEmployee(pArrayListEmployee);
-		utn_getNumero(&idBuscado, "Ingrese ID del empleado a eliminar: ", "Error.", 2);
+		utn_getNumero(&idBuscado, "\nIngrese ID del empleado a eliminar: ", "Error.", 2);
 
 		len = ll_len(pArrayListEmployee);
 		for(i=0; i<len;i++)
@@ -266,20 +276,23 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 			employee_getId(unEmpleado,&idEmployee);
 			if(idEmployee == idBuscado)
 			{
-				printf("Empleado a eliminar: \n");
+				printf("\nEmpleado a eliminar: \n");
 				employee_show(unEmpleado);
-				if(ConfirmarGestion("DESEA CONTINUAR SI[S] - NO[N]: ","ERROR. REINGRESE.")==1)
+				respuesta = ConfirmarGestion("¿Desea confirmar eliminacion? SI[S] - NO[N]: ","ERROR. REINGRESE.");
+				if(respuesta==1)
 				{
 					ll_remove(pArrayListEmployee, i);
+					retorno = 1;
 
+				}else
+				{
+					retorno = 0;
 				}
+				break;
 			}
 
 		}
 	}
-
-
-	retorno = 0;
 
 	return retorno;
 }
@@ -288,7 +301,8 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 0 Exito
+ * 		   int -1 Error
  *
  */
 int controller_ListEmployee(LinkedList* pArrayListEmployee)
@@ -302,7 +316,6 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
 	if(pArrayListEmployee!=NULL)
 	{
 		len = ll_len(pArrayListEmployee);
-		printf("%d", len);
 		printf("\nListado de Empleados:");
 		printf("\n   Id |          Nombre |   Hs trabajadas |  Sueldo\n");
 		for(i=0; i<len;i++)
@@ -311,9 +324,9 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
 			employee_show(unEmpleado);
 
 		}
+		retorno = 0;
 	}
 
-	retorno = 0;
 
 
 	return retorno;
@@ -327,7 +340,8 @@ int controller_ListEmployee(LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 0 Exito
+ * 		   int -1 Error
  *
  */
 int controller_sortEmployee(LinkedList* pArrayListEmployee)
@@ -343,7 +357,7 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
 	if(pArrayListEmployee!=NULL)
 	{
 		listAuxiliar= ll_clone(pArrayListEmployee);
-
+		retorno = 0;
 		do{
 			puts("\n\n*****************************************************");
 			printf("\nMENU SORT");
@@ -428,7 +442,6 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
 	}
 
 
-	retorno = 0;
 
 	return retorno;
 }
@@ -437,7 +450,9 @@ int controller_sortEmployee(LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 1 Exito
+ *  	   int 0 Cancelado
+ * 		   int -1 Error
  *
  */
 int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
@@ -451,26 +466,33 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
 	char nombre[50];
 	int horasTrabajadas;
 	int sueldo;
+	int respuesta;
 	char cabecera[50]="id,nombre,horasTrabajadas,sueldo";
 	retorno = -1;
 
 	if(path!= NULL && pArrayListEmployee!=NULL)
 	{
-		pArchivo= fopen(path,"w");
+		respuesta = ConfirmarGestion("Está guardando los cambios en el archivo 'data.csv' ¿Desea confirmar? SI[S] - NO[N]: ","ERROR. REINGRESE.");
+		if(respuesta == 1){
+			pArchivo= fopen(path,"w");
 
-		if(pArchivo!=NULL){
-			len= ll_len(pArrayListEmployee);
-			fprintf(pArchivo, "%s\n",cabecera);
-			for(i=0;i<len;i++){
-				unEmpleado = ll_get(pArrayListEmployee, i);
-				employee_getId(unEmpleado,&id);
-				employee_getNombre(unEmpleado,nombre);
-				employee_getHorasTrabajadas(unEmpleado,&horasTrabajadas);
-				employee_getSueldo(unEmpleado,&sueldo);
-				fprintf(pArchivo, "%d,%s,%d,%d\n",id,nombre,horasTrabajadas,sueldo);
-				retorno = 0;
+			if(pArchivo!=NULL){
+				len= ll_len(pArrayListEmployee);
+				fprintf(pArchivo, "%s\n",cabecera);
+				for(i=0;i<len;i++){
+					unEmpleado = ll_get(pArrayListEmployee, i);
+					employee_getId(unEmpleado,&id);
+					employee_getNombre(unEmpleado,nombre);
+					employee_getHorasTrabajadas(unEmpleado,&horasTrabajadas);
+					employee_getSueldo(unEmpleado,&sueldo);
+					fprintf(pArchivo, "%d,%s,%d,%d\n",id,nombre,horasTrabajadas,sueldo);
+					retorno = 1;
+				}
+
 			}
-
+		}
+		else{
+			retorno = 0;
 		}
 
 	}
@@ -483,7 +505,9 @@ int controller_saveAsText(char* path , LinkedList* pArrayListEmployee)
  *
  * \param path char*
  * \param pArrayListEmployee LinkedList*
- * \return int
+ * \return int 1 Exito
+ *  	   int 0 Cancelado
+ * 		   int -1 Error
  *
  */
 int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
@@ -493,22 +517,30 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 	int retorno;
 	int len;
 	int i;
+	int respuesta;
 	retorno = -1;
 
 	if(path!= NULL && pArrayListEmployee!=NULL)
 	{
-		pArchivo= fopen(path, "wb");
+		respuesta = ConfirmarGestion("Está guardando los cambios en el archivo 'data.csv' ¿Desea confirmar? SI[S] - NO[N]: ","ERROR. REINGRESE.");
+		if(respuesta == 1){
+			pArchivo= fopen(path, "wb");
 
-		if(pArchivo!=NULL){
-			len= ll_len(pArrayListEmployee);
-			for(i=0;i<len;i++){
-				unEmpleado = ll_get(pArrayListEmployee, i);
+			if(pArchivo!=NULL){
+				len= ll_len(pArrayListEmployee);
+				for(i=0;i<len;i++){
+					unEmpleado = ll_get(pArrayListEmployee, i);
 
-				fwrite(unEmpleado, sizeof(Employee), 1,pArchivo);
-				retorno = 0;
+					fwrite(unEmpleado, sizeof(Employee), 1,pArchivo);
+					retorno = 1;
+
+				}
 
 			}
-
+		}
+		else
+		{
+			retorno = 0;
 		}
 
 	}
@@ -519,6 +551,14 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListEmployee)
 
 
 
+/** \brief Carga el último ID desde el archivo id.bin (modo binario).
+ *
+ * \param path char*
+ * \param int id*
+ * \return int 0 Exito
+ * 		   int -1 Error
+ *
+ */
 int controller_ID_loadFromBinary(char* path, int* id)
 {
 	int retorno;
@@ -533,7 +573,7 @@ int controller_ID_loadFromBinary(char* path, int* id)
 		if(pArchivoID!=NULL)
 		{
 			fread(&numero, sizeof(int),1, pArchivoID);
-			printf("id archivo: %d\n", numero);
+			//printf("id archivo: %d\n", numero);
 			*id = numero;
 			retorno = 0;
 		}
@@ -545,6 +585,13 @@ int controller_ID_loadFromBinary(char* path, int* id)
 	return retorno;
 }
 
+/** \brief Guarda el ultimo ID en el archivo id.bin (modo binario).
+ *
+ * \param path char*
+ * \return int 0 Exito
+ * 		   int -1 Error
+ *
+ */
 int controller_ID_saveAsBinary(char* path)
 {
 	FILE* pArchivoID;
@@ -559,7 +606,7 @@ int controller_ID_saveAsBinary(char* path)
 		if(pArchivoID!=NULL){
 
 			id = idStatic;
-			printf("ID GUARDADO EN ARCHIVO ID.BIN: %d", id);
+			//printf("ID GUARDADO EN ARCHIVO ID.BIN: %d", id);
 			fwrite(&id, sizeof(int), 1,pArchivoID);
 			retorno = 0;
 
@@ -573,26 +620,26 @@ int controller_ID_saveAsBinary(char* path)
 
 
 
+/** \brief Obtiene el último ID desde el archivo id.bin y lo guarda en idStatic(modo binario).
+ *
+ * \param path char*
+ * \return int 0 Exito
+ * 		   int -1 Error
+ *
+ */
 int controller_SiguienteID(char* path){
 
 	int idObtenido;
-	//int id = 1002;
-	int retorno =0;
-
+	int retorno;
+	retorno = -1;
 	if(path!= NULL)
 	{
-		//controller_ID_saveAsBinary(path, &id);
-
 		controller_ID_loadFromBinary(path, &idObtenido);
-		printf("1111 %d", idObtenido);
+		//printf("%d", idObtenido);
 		idObtenido= idObtenido+1;
 		idStatic = idObtenido;
-
-		//controller_ID_saveAsBinary(path , &idObtenido);
+		retorno = 0;
 
 	}
-
-
-
 	return retorno;
 }

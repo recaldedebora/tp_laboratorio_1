@@ -47,7 +47,7 @@ Employee* employee_newParametros(char* idStr,char* nombreStr,char* horasTrabajad
 	employee_setSueldo(unEmpleado,sueldo);
 
 
-	printf("Empleado dado de alta:\n ID: %d - NOMBRE: %s - HORAS: %d - SUELDO: %d\n",id,nombreStr,horasTrabajadas,sueldo);
+	//printf("Empleado dado de alta:\n ID: %d - NOMBRE: %s - HORAS: %d - SUELDO: %d\n",id,nombreStr,horasTrabajadas,sueldo);
 
 	return unEmpleado;
 }

@@ -28,17 +28,12 @@ int main()
 	setbuf(stdout,NULL);
     int option;
     LinkedList* listaEmpleados = ll_newLinkedList();
-    FILE* pArchivo;
-    int numero;
-    numero=1000;
-
-    pArchivo= fopen("id.bin","wb");
-
-    if(pArchivo!=NULL)
-    {
-    fwrite(&numero, sizeof(int),1, pArchivo);
-    fclose(pArchivo);
-    }
+    int flag;
+    int flagGuardado;
+    int respuesta;
+    int exito;
+    flag = 0;
+    flagGuardado=0;
 
     controller_SiguienteID("id.bin");
     do{
@@ -56,51 +51,179 @@ int main()
     	printf("\n9. Guardar los datos de los empleados en el archivo data.bin (modo binario).");
     	printf("\n10. Salir");
     	printf("\n*****************************************************");
-    	utn_getNumeroRango(&option, "\nIngrese opcion: ", "Error.", 1, 10, 2);
+    	utn_getNumeroRango(&option, "\nIngrese opcion: ", "Error.", 0, 10, 2);
 
 
         switch(option)
         {
             case 1:
-                controller_loadFromText("data.csv",listaEmpleados);
-
+            	if(controller_loadFromText("data.csv",listaEmpleados)==0){
+            		printf("\nLista cargada correctamente");
+					flag++;
+            	}else
+            	{
+            		printf("\nLista NO cargada correctamente");
+            	}
 			break;
 
             case 2:
-            	controller_loadFromBinary("data.bin" , listaEmpleados);
+            	if(controller_loadFromBinary("data.bin" , listaEmpleados)==0){
+            		printf("\nLista cargada correctamente");
+					flag++;
+            	}else
+            	{
+            		printf("\nLista NO cargada correctamente");
+            	}
 			break;
 
             case 3:
-            	controller_addEmployee(listaEmpleados);
+            	if(flag == 0){
+                    printf("Antes de dar de alta un empleado debe cargar la lista guardada en el archivo. (opcion 1 o 2)");
+            	}
+            	else{
+            		exito = controller_addEmployee(listaEmpleados);
+            		if(exito ==1){
+            			printf("\nAlta registrada correctamente");
+            		}
+            		else{
+            			if(exito ==0){
+            				printf("\nAlta calcelada");
+            			}
+            			else
+            			{
+            				printf("\nError en el alta.");
+            			}
+
+            		}
+                }
 			break;
 
             case 4:
-            	controller_editEmployee(listaEmpleados);
+            	if(flag == 0){
+					printf("Antes de modificar un empleado debe cargar la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					exito = controller_editEmployee(listaEmpleados);
+					if(exito ==1){
+						printf("\nModificacion registrada correctamente");
+					}
+					else{
+						if(exito ==0){
+							printf("\nModificacion calcelada");
+						}
+						else
+						{
+							printf("\nError en la modificacion.");
+						}
+
+					}
+				}
 			break;
 
             case 5:
-            	controller_removeEmployee(listaEmpleados);
+            	if(flag == 0){
+					printf("Antes de eliminar un empleado debe cargar la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					exito = controller_removeEmployee(listaEmpleados);
+					if(exito ==1){
+						printf("\nEliminacion realizada correctamente");
+					}
+					else{
+						if(exito ==0){
+							printf("\nEliminacion calcelada");
+						}
+						else
+						{
+							printf("\nError en la eliminacion.");
+						}
+
+					}
+				}
 			break;
 
             case 6:
-            	controller_ListEmployee(listaEmpleados);
+            	if(flag == 0){
+					printf("\nAntes de listar los empleados debe cargar la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					if(controller_ListEmployee(listaEmpleados)==-1){
+						printf("\nError al listar.");
+					}
+				}
 			break;
 
             case 7:
-            	controller_sortEmployee(listaEmpleados);
+            	if(flag == 0){
+					printf("\nAntes de ordenar la lista de empleados debe cargar la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					if(controller_sortEmployee(listaEmpleados)==-1){
+						printf("\nError al ordenar.");
+					}
+				}
 			break;
 
             case 8:
-            	controller_saveAsText("data.csv" , listaEmpleados);
+            	if(flag == 0){
+					printf("\nAntes de guardar debe abrir la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					flagGuardado++;
+					exito = controller_saveAsText("data.csv" , listaEmpleados);
+					if(exito ==1){
+						printf("\nGuardado realizado correctamente");
+					}
+					else{
+						if(exito ==0){
+							printf("\nGuardado calcelado");
+						}
+						else
+						{
+							printf("\nError en el guardado.");
+						}
+
+					}
+				}
 			break;
 
             case 9:
-            	controller_saveAsBinary("data.bin" , listaEmpleados);
+            	if(flag == 0){
+					printf("Antes de guardar debe abrir la lista guardada en el archivo. (opcion 1 o 2)");
+				}
+				else{
+					flagGuardado++;
+					exito = controller_saveAsBinary("data.bin" , listaEmpleados);
+					if(exito ==1){
+						printf("\nGuardado realizado correctamente");
+					}
+					else{
+						if(exito ==0){
+							printf("\nGuardado calcelado");
+						}
+						else
+						{
+							printf("\nError en el guardado.");
+						}
+
+					}
+				}
 			break;
+            case 10:
+            	if(flagGuardado == 0){
+            		respuesta = ConfirmarGestion("Está por salir sin guardar los cambios, ¿Desea continuar? SI[S] - NO[N]: ","ERROR. REINGRESE.");
+            		if(respuesta == 1){
+            			option = 0;
+            		}
+            	}
+				else{
+					option = 0;
+				}
+            break;
 
 
         }
-    }while(option != 10);
+    }while(option != 0);
 
     controller_ID_saveAsBinary("id.bin");
 
