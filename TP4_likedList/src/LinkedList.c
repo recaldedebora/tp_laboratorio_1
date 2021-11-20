@@ -265,22 +265,15 @@ int ll_remove(LinkedList* this,int index)
     	if(index>=0 && index<len){
 			pNodeActual = getNode(this, index);
     		if(pNodeActual!=NULL){
-    			/*if(len==1){//chequear
-					this->pFirstNode=NULL;
-				}
-				else
-				{*///es lo que saqué
-					if(index==0){
-						this->pFirstNode= pNodeActual->pNextNode;//this pasaria a apuntar al proximo nodo o a NULL si no hay otro
-					}else{
-						pNodeAnterior= getNode(this, index-1);
-						if(pNodeAnterior!=NULL){
-							pNodeAnterior->pNextNode=pNodeActual->pNextNode;
+				if(index==0){
+					this->pFirstNode= pNodeActual->pNextNode;//this pasaria a apuntar al proximo nodo o a NULL si no hay otro
+				}else{
+					pNodeAnterior= getNode(this, index-1);
+					if(pNodeAnterior!=NULL){
+						pNodeAnterior->pNextNode=pNodeActual->pNextNode;
 
-						}
 					}
-				//}
-
+				}
 				this->size--;
 				returnAux = 0;
 				free(pNodeActual);
